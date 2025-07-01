@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Artistic Journey</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: radial-gradient(ellipse at center, #1a1a3e 0%, #0a0a1f 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: #fff;
+            overflow-x: auto;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, 
+                rgba(0, 212, 255, 0.02) 0%, 
+                rgba(255, 0, 110, 0.02) 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            padding: 60px 0;
+            z-index: 2;
+        }
+
+        .timeline-title {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 60px;
+            background: linear-gradient(135deg, #00d4ff, #ff006e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 40px rgba(255, 0, 110, 0.5);
+        }
+
+        .timeline-container {
+            position: relative;
+            width: 100%;
+            height: 800px;
+        }
+
+        /* Year markers */
+        .year-markers {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 50px;
+            pointer-events: none;
+        }
+
+        .year-marker {
+            position: relative;
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 1.2em;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        .year-marker::before {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 1px;
+            height: 750px;
+            background: linear-gradient(to top, rgba(255, 255, 255, 0.1), transparent);
+        }
+
+        .flow-path {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .event-node {
+            position: absolute;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            text-align: center;
+            font-size: 0.8em;
+            padding: 10px;
+            box-shadow: 0 0 20px currentColor, inset 0 0 20px rgba(255,255,255,0.2);
+            animation: float 3s ease-in-out infinite;
+            word-wrap: break-word;
+            line-height: 1.2;
+        }
+
+        .event-date {
+            font-size: 0.65em;
+            opacity: 0.7;
+            margin-top: 3px;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Event categories and sizes */
+        .breakthrough {
+            background: radial-gradient(circle, #ff006e, #d4005e);
+            color: #fff;
+            box-shadow: 0 0 40px #ff006e, inset 0 0 20px rgba(255,255,255,0.3);
+        }
+
+        .workshop {
+            background: radial-gradient(circle, #00d4ff, #0099cc);
+            color: #fff;
+            box-shadow: 0 0 30px #00d4ff, inset 0 0 20px rgba(255,255,255,0.3);
+        }
+
+        .performance {
+            background: radial-gradient(circle, #b366ff, #8b3fd9);
+            color: #fff;
+            box-shadow: 0 0 30px #b366ff, inset 0 0 20px rgba(255,255,255,0.3);
+        }
+
+        .challenge {
+            background: radial-gradient(circle, #4a90e2, #2e5a8e);
+            color: #fff;
+            box-shadow: 0 0 25px #4a90e2, inset 0 0 20px rgba(255,255,255,0.3);
+        }
+
+        .writing {
+            background: radial-gradient(circle, #ff66cc, #ff33aa);
+            color: #fff;
+            box-shadow: 0 0 35px #ff66cc, inset 0 0 20px rgba(255,255,255,0.3);
+        }
+
+        /* Size variations */
+        .size-large {
+            width: 120px;
+            height: 120px;
+            font-size: 0.9em;
+            z-index: 10;
+        }
+
+        .size-medium {
+            width: 90px;
+            height: 90px;
+            font-size: 0.75em;
+            z-index: 8;
+        }
+
+        .size-small {
+            width: 70px;
+            height: 70px;
+            font-size: 0.65em;
+            z-index: 6;
+        }
+
+        .event-node:hover {
+            transform: scale(1.1);
+            z-index: 20;
+        }
+
+        .tooltip {
+            position: absolute;
+            background: rgba(20, 20, 40, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            max-width: 300px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+            z-index: 30;
+        }
+
+        .tooltip.show {
+            opacity: 1;
+        }
+
+        .tooltip h3 {
+            margin: 0 0 8px 0;
+            color: #00d4ff;
+            font-size: 1.1em;
+        }
+
+        .tooltip .date {
+            color: #ff66cc;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .tooltip .description {
+            color: #e0e0e0;
+            font-size: 0.85em;
+            line-height: 1.4;
+        }
+
+        /* Connection lines */
+        .connection {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            pointer-events: none;
+            opacity: 0.3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="timeline-title">My Artistic Journey</h1>
+        <div class="timeline-container" id="timeline">
+            <!-- SVG for curved path -->
+            <svg class="flow-path" viewBox="0 0 1400 800" preserveAspectRatio="none">
+                <path id="flowPath" d="M 50 400 Q 300 200, 500 300 T 900 200 Q 1100 300, 1350 400" 
+                      stroke="rgba(255,255,255,0.1)" stroke-width="3" fill="none" stroke-dasharray="5,5">
+                    <animate attributeName="stroke-dashoffset" from="10" to="0" dur="1s" repeatCount="indefinite"/>
+                </path>
+            </svg>
+            <!-- Year markers -->
+            <div class="year-markers">
+                <div class="year-marker">2019</div>
+                <div class="year-marker">2020</div>
+                <div class="year-marker">2021</div>
+                <div class="year-marker">2022</div>
+                <div class="year-marker">2023</div>
+                <div class="year-marker">2024</div>
+                <div class="year-marker">2025</div>
+            </div>
+        </div>
+        <div class="tooltip" id="tooltip"></div>
+    </div>
+
+    <script>
+        const events = [
+            // Major breakthroughs (large)
+            {
+                date: "23/02/2019",
+                title: "Lé Nør",
+                description: "I was SPEECHLESS",
+                category: "breakthrough",
+                size: "large",
+                x: 10, y: 50
+            },
+            {
+                date: "5/09/2022",
+                title: "A Resting Mess",
+                description: "Reconnected with my body/intuition. Experienced 'the longing' while being in the beautiful STC studio.",
+                category: "breakthrough",
+                size: "large",
+                x: 35, y: 25
+            },
+            {
+                date: "23/02/2024",
+                title: "Invisible Opera",
+                description: "Reality was opened up... 'this is the type of art I want to make...'",
+                category: "breakthrough",
+                size: "large",
+                x: 60, y: 20
+            },
+            {
+                date: "9/08/2024",
+                title: "Night Night",
+                description: "Reality opened up. I had a big ol cry.",
+                category: "breakthrough",
+                size: "large",
+                x: 75, y: 35
+            },
+            {
+                date: "18/02/2025",
+                title: "MANIFEST",
+                description: "I BLOODY LOVE THIS - NO STAGE FRIGHT",
+                category: "breakthrough",
+                size: "large",
+                x: 85, y: 25
+            },
+            {
+                date: "24/06/2025",
+                title: "EXP.EXE!",
+                description: "First polished piece of personal creative writing that's been shared! SO BLOODY PROUD OF THIS.",
+                category: "writing",
+                size: "large",
+                x: 95, y: 40
+            },
+            
+            // Important growth moments (medium)
+            {
+                date: "7/12/2023",
+                title: "WAAPA Rejection",
+                description: "After a couple weeks moping, decided that I would give performance making a crack, regardless.",
+                category: "challenge",
+                size: "medium",
+                x: 48, y: 70
+            },
+            {
+                date: "6/01/2024",
+                title: "BPA Acceptance",
+                description: "Email from Jeremy - accepted into the BPA!",
+                category: "breakthrough",
+                size: "medium",
+                x: 52, y: 15
+            },
+            {
+                date: "27/03/2024",
+                title: "Monologue Showings",
+                description: "First ever time performing lines for an audience. Felt the anxious wave rise, and pulled myself back from the brink!",
+                category: "performance",
+                size: "medium",
+                x: 65, y: 50
+            },
+            {
+                date: "15/02/2025",
+                title: "Basking in a Groove",
+                description: "I found a groove and a practice that totally feels like me.",
+                category: "workshop",
+                size: "medium",
+                x: 80, y: 60
+            },
+            {
+                date: "27/02/2025",
+                title: "Solo Ooze",
+                description: "I finally did the thing myself.",
+                category: "workshop",
+                size: "medium",
+                x: 88, y: 45
+            },
+            
+            // Other significant events (small)
+            {
+                date: "3/12/2020",
+                title: "First Improv",
+                description: "First public improv show! Was v nervous, but had fun!",
+                category: "performance",
+                size: "small",
+                x: 20, y: 65
+            },
+            {
+                date: "27/03/2021",
+                title: "TLGH Audition",
+                description: "First time doing weird theatre activities and I LOVED IT.",
+                category: "performance",
+                size: "small",
+                x: 25, y: 35
+            },
+            {
+                date: "8/05/2021",
+                title: "Callback Bomb",
+                description: "Was up all night. Totally bombed. Was completely devastated.",
+                category: "challenge",
+                size: "small",
+                x: 28, y: 55
+            },
+            {
+                date: "4/02/2023",
+                title: "Writing Workshop",
+                description: "First time writing and sharing something creative.",
+                category: "writing",
+                size: "small",
+                x: 40, y: 45
+            },
+            {
+                date: "14/10/2023",
+                title: "A Resting Mess Audition",
+                description: "My EOI wasn't accepted but I didn't take no for an answer!",
+                category: "workshop",
+                size: "small",
+                x: 45, y: 30
+            },
+            {
+                date: "20/05/2024",
+                title: "Duo Scene",
+                description: "First time working with someone on a scripted thing. Built trust.",
+                category: "performance",
+                size: "small",
+                x: 70, y: 65
+            },
+            {
+                date: "4/04/2025",
+                title: "Solo Showings",
+                description: "Didn't perform, but made it back into the room! No shame...",
+                category: "performance",
+                size: "small",
+                x: 92, y: 55
+            }
+        ];
+
+        const timeline = document.getElementById('timeline');
+        const tooltip = document.getElementById('tooltip');
+
+        // Create event nodes
+        events.forEach((event, index) => {
+            const node = document.createElement('div');
+            node.className = `event-node ${event.category} ${event.size}`;
+            node.style.left = `${event.x}%`;
+            node.style.top = `${event.y}%`;
+            node.style.animationDelay = `${index * 0.1}s`;
+            
+            // Extract just the year from the date
+            const year = event.date.split('/')[2];
+            
+            // Use shorter title for display if needed
+            let displayTitle = event.title;
+            if (event.size === 'small' && event.title.length > 12) {
+                // Shorten long titles for small nodes
+                if (event.title === "A Resting Mess Audition") displayTitle = "ARM Audition";
+                else if (event.title === "Writing Workshop") displayTitle = "Writing";
+                else if (event.title === "Solo Showings") displayTitle = "Solo";
+            }
+            
+            node.innerHTML = `
+                <div>${displayTitle}</div>
+                <div class="event-date">${year}</div>
+            `;
+            
+            node.addEventListener('mouseenter', (e) => {
+                tooltip.innerHTML = `
+                    <h3>${event.title}</h3>
+                    <div class="date">${event.date}</div>
+                    <div class="description">${event.description}</div>
+                `;
+                tooltip.classList.add('show');
+                
+                const rect = node.getBoundingClientRect();
+                const tooltipRect = tooltip.getBoundingClientRect();
+                
+                let left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
+                let top = rect.bottom + 10;
+                
+                // Keep tooltip in viewport
+                if (left < 10) left = 10;
+                if (left + tooltipRect.width > window.innerWidth - 10) {
+                    left = window.innerWidth - tooltipRect.width - 10;
+                }
+                
+                tooltip.style.left = `${left}px`;
+                tooltip.style.top = `${top}px`;
+            });
+            
+            node.addEventListener('mouseleave', () => {
+                tooltip.classList.remove('show');
+            });
+            
+            timeline.appendChild(node);
+        });
+
+        // Add some connection lines between related events
+        const connections = [
+            {from: [48, 70], to: [52, 15]}, // WAAPA rejection to BPA acceptance
+            {from: [35, 25], to: [45, 30]}, // Resting Mess workshop to audition
+            {from: [80, 60], to: [88, 45]}, // Basking in groove to solo ooze
+        ];
+
+        connections.forEach(conn => {
+            const line = document.createElement('div');
+            line.className = 'connection';
+            
+            const x1 = (conn.from[0] / 100) * timeline.offsetWidth;
+            const y1 = (conn.from[1] / 100) * timeline.offsetHeight;
+            const x2 = (conn.to[0] / 100) * timeline.offsetWidth;
+            const y2 = (conn.to[1] / 100) * timeline.offsetHeight;
+            
+            const length = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+            const angle = Math.atan2(y2 - y1, x2 - x1) * (180 / Math.PI);
+            
+            line.style.width = `${length}px`;
+            line.style.left = `${x1}px`;
+            line.style.top = `${y1}px`;
+            line.style.transform = `rotate(${angle}deg)`;
+            line.style.transformOrigin = '0 50%';
+            
+            timeline.appendChild(line);
+        });
+    </script>
+</body>
+</html>
